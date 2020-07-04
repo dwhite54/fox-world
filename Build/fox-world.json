@@ -1,9 +1,9 @@
 {
 "companyName": "CwC CSU",
 "productName": "BlocksWorld",
-"productVersion": "0.1",
+"productVersion": "0.2",
 "dataUrl": "fox-world.data.unityweb",
-"wasmCodeUrl": "fox-world.wasm.code.unityweb",
+"wasmCodeUrl": "fox-world.wasm",
 "wasmFrameworkUrl": "fox-world.wasm.framework.unityweb",
 "wasmMemoryUrl": "fox-world.wasm.memory.unityweb",
 "graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
