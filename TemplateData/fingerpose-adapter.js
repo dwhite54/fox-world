@@ -13,9 +13,19 @@ const landmarkColors = {
 };
 
 const gestureStrings = {
+    'victory': '✌🏻',
     'thumbs up': '👍',
-    'two front': '✌🏻'
+    'thumbs left': '👈',
+    'thumbs right': '👉',
+    'thumbs down': '👎',
+    'point up': '☝️',
+    'point left': '👈',
+    'point right': '👉',
+    'point down': '👇',
+    'wave': '✋',
+    'fist': '✊',
 };
+
 // see https://github.com/cwccsu/BlocksWorld/blob/develop/BlocksWorld/External/Perception/postures.py
 
 async function main() {
@@ -30,7 +40,16 @@ async function main() {
     // add "✌🏻" and "👍" as sample gestures
     const knownGestures = [
         fp.Gestures.VictoryGesture,
-        fp.Gestures.ThumbsUpGesture
+        fp.Gestures.ThumbsUpGesture,
+        fp.Gestures.ThumbsLeftGesture,
+        fp.Gestures.ThumbsRightGesture,
+        fp.Gestures.ThumbsDownGesture,
+        fp.Gestures.PointUpGesture,
+        fp.Gestures.PointLeftGesture,
+        fp.Gestures.PointRightGesture,
+        fp.Gestures.PointDownGesture,
+        fp.Gestures.WaveGesture,
+        fp.Gestures.FistGesture,
     ];
     const GE = new fp.GestureEstimator(knownGestures);
 
@@ -70,7 +89,7 @@ async function main() {
                     return (p.confidence > c.confidence) ? p : c;
                 });
 
-                resultLayer.innerText = result.name;
+                resultLayer.innerText = gestureStrings[result.name] + " " + result.name;
                 unityInstance.SendMessage("UserHandPoseModule", "SetGesture", result.name);
             }
         }
