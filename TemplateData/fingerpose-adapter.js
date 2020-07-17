@@ -134,7 +134,7 @@ function drawPoint(ctx, x, y, r, color) {
     ctx.fill();
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+function startPerception() {
 
     initCamera(
         config.video.width, config.video.height, config.video.fps
@@ -150,4 +150,4 @@ window.addEventListener("DOMContentLoaded", () => {
     canvas.width = config.video.width;
     canvas.height = config.video.height;
     console.log("Canvas initialized");
-});
+};
