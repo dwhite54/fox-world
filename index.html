@@ -6,6 +6,7 @@
 	<title>Unity WebGL Player | BlocksWorld</title>
 	<link rel="shortcut icon" href="TemplateData/favicon.ico">
 	<link rel="stylesheet" href="TemplateData/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="TemplateData/UnityProgress.js"></script>
 	<script src="Build/UnityLoader.js"></script>
 	<script src="TemplateData/aws-sdk-2.709.0.min.js"></script>
@@ -40,6 +41,10 @@
 	</script>
 </head>
 <body>
+	<input type="checkbox" id="show-gesture" name="show-gesture" />
+	<label for="show-gesture">Show video</label><br>
+	<input type="checkbox" id="show-datastore" name="show-datastore" />
+	<label for="show-datastore">Show datastore</label><br>
 	<div class="webgl-content">
 		<div id="unityContainer" style="width: 960px; height: 600px"></div>
 		<div class="footer">
@@ -58,5 +63,22 @@
 		<canvas id="pose-canvas" class="layer"></canvas>
 		<div id="pose-result" class="layer"></div>
 	</div>
+	<script>
+		$('#show-gesture').change(function () {
+			if (this.checked) {
+				$('#video-container').show();
+			} else {
+				$('#video-container').hide();
+			}
+		});
+
+		$('#show-datastore').change(function () {
+			if (this.checked) {
+				unityInstance.SendMessage('DataStore Display', 'SetTrue');
+			} else {
+				unityInstance.SendMessage('DataStore Display', 'SetFalse');
+			}
+		});
+	</script>
 </body>
 </html>
