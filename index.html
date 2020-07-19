@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-us">
 <head>
 	<meta charset="utf-8">
@@ -14,7 +14,8 @@
 	<script src="TemplateData/fingerpose.js" type="text/javascript"></script>
 	<script src="TemplateData/fingerpose-adapter.js" type="text/javascript"></script>
 	<script>
-		var unityInstance = UnityLoader.instantiate("unityContainer", "Build/fox-world.json", {
+		//omit "var" so that it's global
+		unityInstance = UnityLoader.instantiate("unityContainer", "Build/fox-world.json", {
 			compatibilityCheck: function (unityInstance, onsuccess, onerror) {
 				if (!UnityLoader.SystemInfo.hasWebGL) {
 					unityInstance.popup("Your browser does not support WebGL",
@@ -34,6 +35,8 @@
 				onRuntimeInitialized: startPerception,
 			},
 		});
+
+
 	</script>
 </head>
 <body>
