@@ -100,7 +100,10 @@ async function main() {
 
     estimateHands();
     console.log("Starting predictions");
-    $('#start-btn').show();
+
+    $('#start-btn').html('Click here to start!');
+    $('#start-btn').prop('disabled', false);
+    $("#engage-chk").prop("checked", false);
 }
 
 async function initCamera(width, height, fps) {
