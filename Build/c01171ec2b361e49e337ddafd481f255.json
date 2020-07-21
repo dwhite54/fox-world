@@ -1,0 +1,16 @@
+{
+"companyName": "CwC CSU",
+"productName": "BlocksWorld",
+"productVersion": "0.2",
+"dataUrl": "25f6031541aaf8afb78b2e743042cb18.unityweb",
+"wasmCodeUrl": "5d9005bbc00397a3af1f14aae3f6d1fd.wasm",
+"wasmFrameworkUrl": "e0f0fc964d1703ee42100ac6b69df1a9.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.4f1"
+}
