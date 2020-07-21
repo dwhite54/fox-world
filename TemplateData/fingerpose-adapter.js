@@ -1,6 +1,6 @@
 ﻿
 const config = {
-    video: { width: 640, height: 480, fps: 30 }
+    video: { width: 640, height: 480, fps: 10 }
 };
 
 const landmarkColors = {
@@ -100,6 +100,7 @@ async function main() {
 
     estimateHands();
     console.log("Starting predictions");
+    $('#start-btn').show();
 }
 
 async function initCamera(width, height, fps) {
