@@ -142,7 +142,6 @@ this.onmessage = function(e) {
       assert(STACK_MAX > STACK_BASE);
       Module['establishStackSpace'](e.data.stackBase, e.data.stackBase + e.data.stackSize);
       Module['establishStackSpaceInModule'](e.data.stackBase, e.data.stackBase + e.data.stackSize);
-      Module.writeStackCookie();
 
       PThread.receiveObjectTransfer(e.data);
       PThread.setThreadStatus(Module._pthread_self(), 1/*EM_THREAD_STATUS_RUNNING*/);
@@ -158,7 +157,6 @@ this.onmessage = function(e) {
         // flag -s EMULATE_FUNCTION_POINTER_CASTS=1 to add in emulation for this x86 ABI extension.
         result = Module['dynCall_ii'](e.data.start_routine, e.data.arg);
 
-        Module.checkStackCookie();
 
       } catch(e) {
         if (e === 'Canceled!') {
