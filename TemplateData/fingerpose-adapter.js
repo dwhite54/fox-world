@@ -91,7 +91,6 @@ async function main() {
 
                 resultLayer.innerText = gestureStrings[result.name] + " " + result.name;
                 unityInstance.SendMessage("UserHandPoseModule", "SetGesture", result.name);
-                $('#start-btn').show();
             }
         }
 
@@ -101,6 +100,7 @@ async function main() {
 
     estimateHands();
     console.log("Starting predictions");
+    $('#start-btn').show();
 }
 
 async function initCamera(width, height, fps) {
