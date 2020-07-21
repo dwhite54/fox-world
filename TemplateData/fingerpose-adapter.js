@@ -91,6 +91,7 @@ async function main() {
 
                 resultLayer.innerText = gestureStrings[result.name] + " " + result.name;
                 unityInstance.SendMessage("UserHandPoseModule", "SetGesture", result.name);
+                $('#start-btn').show();
             }
         }
 
