@@ -100,6 +100,7 @@ async function main() {
 
     estimateHands();
     console.log("Starting predictions");
+    $('#start-btn').show();
 }
 
 async function initCamera(width, height, fps) {
