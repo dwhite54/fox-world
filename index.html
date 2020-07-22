@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en-us">
 <head>
 	<meta charset="utf-8">
@@ -41,19 +41,24 @@
 	</script>
 </head>
 <body>
-	<input type="checkbox" id="show-gesture" name="show-gesture" />
-	<label for="show-gesture">Show video</label><br>
-	<input type="checkbox" id="show-datastore" name="show-datastore" />
-	<label for="show-datastore">Show datastore</label><br>
-	<button type="button" id="start-btn" disabled>Loading...</button>
-	<input type="checkbox" id="engage-chk" style="display:none;" />
 	<div class="webgl-content">
+		<div class="header">
+			<div class="ctrl-left"><button type="button" class="btn" id="start-btn" disabled>Loading...</button></div>
+			<div class="ctrl-right">
+				<input type="checkbox" id="show-gesture" name="show-gesture" />
+				<label for="show-gesture">Show video</label>
+				<input type="checkbox" id="show-datastore" name="show-datastore" />
+				<label for="show-datastore">Show datastore</label>
+				<input type="checkbox" id="engage-chk" style="display:none;" />
+			</div>
+		</div>
 		<div id="unityContainer" style="width: 960px; height: 600px"></div>
 		<div class="footer">
 			<div class="webgl-logo"></div>
 			<div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-			<div class="title">BlocksWorld</div>
+			<div class="title">Faelyn Fox</div>
 		</div>
+		<div class="contact">For questions or comments, contact fortega@colostate.edu</div>
 	</div>
 	<div id="audio-div" style="display: none">
 		<audio id="audio-playback" crossorigin=anonymous>
@@ -85,10 +90,14 @@
 		$('#start-btn').click(function () {
 			if ($('#engage-chk').prop('checked') == true) {
 				$('#start-btn').html('Resume');
+				$("#start-btn").addClass('btn-start');
+				$("#start-btn").removeClass('btn-pause');
 				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 0);
 				$("#engage-chk").prop("checked", false);
 			} else {
 				$('#start-btn').html('Pause');
+				$("#start-btn").removeClass('btn-start');
+				$("#start-btn").addClass('btn-pause');
 				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 1);
 				$("#engage-chk").prop("checked", true);
 			}
