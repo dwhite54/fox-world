@@ -123,13 +123,21 @@ async function initCamera(width, height, fps) {
     video.width = width;
     video.height = height;
 
-    // get video stream
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    video.srcObject = stream;
+    try {
+        // get video stream
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
 
-    return new Promise(resolve => {
-        video.onloadedmetadata = () => { resolve(video) };
-    });
+        return new Promise(resolve => {
+            video.onloadedmetadata = () => { resolve(video) };
+        });
+    } catch (error) {
+        console.log("Error "+error.code + " " + error.name + ":" + error.message);
+        if (error.message === "Could not start video source") {
+            alert(error.message + "\nIf you have any other applications open that are using your webcam, please stop sharing your video with them and refresh.");
+        }
+        return;
+    }
 }
 
 function drawPoint(ctx, x, y, r, color) {
