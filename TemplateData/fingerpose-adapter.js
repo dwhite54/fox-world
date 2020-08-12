@@ -1,6 +1,6 @@
 ﻿
 const config = {
-    video: { width: 640, height: 480, fps: 10 }
+    video: { width: 320, height: 240, fps: 10 }
 };
 
 const landmarkColors = {
