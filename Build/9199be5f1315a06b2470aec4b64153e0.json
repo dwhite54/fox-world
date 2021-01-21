@@ -1,0 +1,16 @@
+{
+"companyName": "CwC CSU",
+"productName": "Faelyn Fox",
+"productVersion": "0.2",
+"dataUrl": "5fd35f71bd59dc63f6819b970dde2f41.unityweb",
+"wasmCodeUrl": "7b0fd648cab89cc17664b849c1a60a9a.wasm",
+"wasmFrameworkUrl": "582f300f830aea65657c74ca39bf7fd1.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.4f1"
+}
