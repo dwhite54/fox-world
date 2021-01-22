@@ -1,38 +1,38 @@
 ﻿<!DOCTYPE html>
 <html lang="en-us">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | BlocksWorld</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="TemplateData/aws-sdk-2.709.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
-    <script src="TemplateData/fingerpose.js" type="text/javascript"></script>
-    <script src="TemplateData/fingerpose-adapter.js" type="text/javascript"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Unity WebGL Player | BlocksWorld</title>
+	<link rel="shortcut icon" href="TemplateData/favicon.ico">
+	<link rel="stylesheet" href="TemplateData/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="TemplateData/aws-sdk-2.709.0.min.js"></script>
+	<script src="TemplateData/fingerpose.js"></script>
+	<script src="TemplateData/fingerpose-adapter.js"></script>
 </head>
 <body>
-    <div id="unity-container" class="unity-desktop">
-        <div id="unity-header">
-            <button type="button" id="start-btn" disabled>Loading...</button>
-            <input type="checkbox" id="engage-chk" style="display:none;" />
-            <label for="show-gesture"><input type="checkbox" id="show-gesture" name="show-gesture" /> Show Video</label>
-            <label for="show-datastore"><input type="checkbox" id="show-datastore" name="show-datastore" checked/> Show Datastore</label>
-            <label for="use-gesture"><input type="checkbox" id="use-gesture" name="use-gesture" checked /> Enable Gesture Input</label>
-            <label for="use-key"><input type="checkbox" id="use-key" name="use-key" checked /> Enable Keyboard Input</label>
-        </div>
-        <canvas id="unity-canvas"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
-        <div id="unity-mobile-warning">
-            WebGL builds are not supported on mobile devices.
-        </div>
+	<div id="unity-container" class="unity-desktop">
+		<div id="unity-header">
+			<button type="button" id="start-btn" disabled>Loading...</button>
+			<input type="checkbox" id="engage-chk" style="display:none;" />
+			<label for="show-datastore"><input type="checkbox" id="show-datastore" name="show-datastore" /> Show Datastore</label>
+			<span id="gesture-controls" style="display:none">
+				<label for="show-gesture"><input type="checkbox" id="show-gesture" name="show-gesture" /> Show Video</label>
+				<label for="use-gesture"><input type="checkbox" id="use-gesture" name="use-gesture" /> Enable Gesture Input</label>
+			</span>
+			<label for="use-key"><input type="checkbox" id="use-key" name="use-key" checked /> Enable Keyboard Input</label>
+		</div>
+		<canvas id="unity-canvas"></canvas>
+		<div id="unity-loading-bar">
+			<div id="unity-logo"></div>
+			<div id="unity-progress-bar-empty">
+				<div id="unity-progress-bar-full"></div>
+			</div>
+		</div>
+		<div id="unity-mobile-warning">
+			WebGL builds are not supported on mobile devices.
+		</div>
 		<div id="unity-footer">
 			<div id="unity-fullscreen-button"></div>
 			<div id="scenes">
@@ -46,15 +46,18 @@
 				<div class="contact">For questions or comments, contact fortega@colostate.edu</div>
 			</div>
 		</div>
-    </div>
-    <script>
+	</div>
+	<div id="loading" style="display:none;">
+		<img id="loading-image" src="TemplateData/loading.gif" alt="Importing gesture model..." />
+	</div>
+	<script>
 		//unity boilerplate
 		var buildUrl = "Build";
-		var loaderUrl = buildUrl + "/c4c07f153778d8abf1842ac44b3ff052.js";
+		var loaderUrl = buildUrl + "/55b027cfe78bae9b0fbebad0d7c12abd.js";
 		var config = {
-			dataUrl: buildUrl + "/63095531f553557b137a296e851da8ea.data",
-			frameworkUrl: buildUrl + "/b16d31507a81ec12404d9f2ead5231ed.js",
-			codeUrl: buildUrl + "/a3639c371ca3068651c864609fae300a.wasm",
+			dataUrl: buildUrl + "/6fc68f827bc758428396717a791b1a6f.data",
+			frameworkUrl: buildUrl + "/d2b59288bc864540bf58db002d15c617.js",
+			codeUrl: buildUrl + "/348fe9ac9dd436583a60323b92f2e9b1.wasm",
         streamingAssetsUrl: "StreamingAssets",
 			companyName: "CwC CSU",
 			productName: "BlocksWorld",
@@ -93,12 +96,85 @@
 				fullscreenButton.onclick = () => {
 					UI.SetFullscreen(1);
 				};
-				startPerception();
+				onFoxReady();
 			}).catch((message) => {
 				alert(message);
 			});
 		};
-        document.body.appendChild(script);
+		document.body.appendChild(script);
+
+		//set up webspeechrecognition
+		var recognition = new webkitSpeechRecognition();
+		recognition.continuous = true;
+		recognition.interimResults = false;  // TODO: set user:isSpeaking true for interim results
+		recognition.onstart = function () {
+			console.log('Speech recognition started.');
+		};
+		recognition.onerror = function (event) {
+			console.log('Speech recognition error: ' + event.error);
+		};
+		recognition.onend = function () {
+			console.log('Speech recognition ended.');
+		};
+		recognition.onresult = function (event) {
+			if (typeof (event.results) == 'undefined') {
+				recognition.onend = null;
+				recognition.stop();
+				return;
+			}
+			for (var i = event.resultIndex; i < event.results.length; ++i) {
+				if (event.results[i].isFinal) {
+					final_transcript += event.results[i][0].transcript;
+				}
+			}
+			console.log('Speech recognized: ' + final_transcript);
+			unityInstance.SendMessage("UserSpeechModule", "SetSpeech", final_transcript);
+			final_transcript = '';
+		};
+
+		//start webspeechrecognition
+		final_transcript = '';
+		recognition.lang = 'en-US';  // TODO: make this configurable
+		recognition.start();
+
+
+		//helper functions
+		function onFoxReady() {
+			$('#start-btn').html('Start!');
+			$('#start-btn').prop('disabled', false);
+			$("#start-btn").addClass('btn-start');
+			$("#engage-chk").prop("checked", false);
+			//disable datastore, hand pose
+			unityInstance.SendMessage('DataStore Display', 'SetFalse');
+			unityInstance.SendMessage("UserHandPoseModule", "DisableModule");
+
+			//show/hide gesture controls when user presses 'g'
+			$(document).keypress(function (e) {
+				if (e.which == 103) {
+					$('#gesture-controls').toggle();
+				}
+			});
+		}
+
+		function startButtonClick() {
+			if ($('#engage-chk').prop('checked') == true) {
+				$('#start-btn').html('Resume');
+				$("#start-btn").addClass('btn-start');
+				$("#start-btn").removeClass('btn-pause');
+				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 0);
+				$("#engage-chk").prop("checked", false);
+			} else {
+				$('#start-btn').html('Pause');
+				$("#start-btn").removeClass('btn-start');
+				$("#start-btn").addClass('btn-pause');
+				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 1);
+				$("#engage-chk").prop("checked", true);
+			}
+		}
+
+		function gestureLibsLoaded() {
+			return typeof tf != 'undefined' && typeof handpose != 'undefined' && typeof fp != 'undefined' && typeof initCamera != 'undefined';
+		}
 
 		//custom page handlers
 		$('#show-gesture').change(function () {
@@ -109,8 +185,34 @@
 			}
 		});
 
-		$('#use-gesture').change(function () {
-			if (this.checked) {
+		$('#use-gesture').change(async () => {
+			if ($('#use-gesture').prop('checked')) {
+				//check if gesture libs have been loaded
+				if (!gestureLibsLoaded()) {
+					//ensure paused
+					var isStarted = $('#engage-chk').prop('checked') == true
+					if (isStarted) {
+						startButtonClick();
+					}
+
+					//display loading gif
+					$('#loading').show();
+
+					//load scripts
+					const tfjs_module = await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs');
+					const handpose_module = await import('https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose');
+
+					//start perception
+					startPerception();
+
+					//hide loading gif
+					$('#loading').hide();
+
+					//unpause (if it was paused)
+					if (isStarted) {
+						startButtonClick();
+					}
+				}
 				unityInstance.SendMessage("UserHandPoseModule", "EnableModule");
 			} else {
 				unityInstance.SendMessage("UserHandPoseModule", "DisableModule");
@@ -136,19 +238,7 @@
 
 
 		$('#start-btn').click(function () {
-			if ($('#engage-chk').prop('checked') == true) {
-				$('#start-btn').html('Resume');
-				$("#start-btn").addClass('btn-start');
-				$("#start-btn").removeClass('btn-pause');
-				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 0);
-				$("#engage-chk").prop("checked", false);
-			} else {
-				$('#start-btn').html('Pause');
-				$("#start-btn").removeClass('btn-start');
-				$("#start-btn").addClass('btn-pause');
-				unityInstance.SendMessage('EngagementModule', 'SetEngaged', 1);
-				$("#engage-chk").prop("checked", true);
-			}
+			startButtonClick();
 		});
 
 		$('#sort-btn').click(function () {
@@ -165,16 +255,16 @@
 			console.log("Grooving Button Clicked")
 			unityInstance.SendMessage('ChildStudySceneController', 'ChangeScene', 'ChildStudy_Grooving');
 		});
-    </script>
-    <div id="audio-div" style="display: none">
-        <audio id="audio-playback" crossorigin=anonymous>
-            <source id="audio-source" type="audio/ogg" src="">
-        </audio>
-    </div>
-    <div id="video-container">
-        <video id="pose-video" class="layer" playsinline></video>
-        <canvas id="pose-canvas" class="layer"></canvas>
-        <div id="pose-result" class="layer"></div>
-    </div>
+	</script>
+	<div id="audio-div" style="display: none">
+		<audio id="audio-playback" crossorigin=anonymous>
+			<source id="audio-source" type="audio/ogg" src="">
+		</audio>
+	</div>
+	<div id="video-container">
+		<video id="pose-video" class="layer" playsinline></video>
+		<canvas id="pose-canvas" class="layer"></canvas>
+		<div id="pose-result" class="layer"></div>
+	</div>
 </body>
 </html>
