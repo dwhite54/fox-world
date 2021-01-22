@@ -132,7 +132,7 @@ async function initCamera(width, height, fps) {
             video.onloadedmetadata = () => { resolve(video) };
         });
     } catch (error) {
-        console.log("Error " + error.code + " " + error.name + ":" + error.message);
+        console.log("Error "+error.code + " " + error.name + ":" + error.message);
         if (error.message === "Could not start video source") {
             alert(error.message + "\nIf you have any other applications open that are using your webcam, please stop sharing your video with them and refresh.");
         }
