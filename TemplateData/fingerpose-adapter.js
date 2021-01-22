@@ -1,5 +1,5 @@
 ﻿
-const config = {
+const fingerposeConfig = {
     video: { width: 320, height: 240, fps: 10 }
 };
 
@@ -61,7 +61,7 @@ async function main() {
     const estimateHands = async () => {
 
         // clear canvas overlay
-        ctx.clearRect(0, 0, config.video.width, config.video.height);
+        ctx.clearRect(0, 0, fingerposeConfig.video.width, fingerposeConfig.video.height);
         resultLayer.innerText = '';
 
         // get hand landmarks from video
@@ -95,7 +95,7 @@ async function main() {
         }
 
         // ...and so on
-        setTimeout(() => { estimateHands(); }, 1000 / config.video.fps);
+        setTimeout(() => { estimateHands(); }, 1000 / fingerposeConfig.video.fps);
     };
 
     estimateHands();
@@ -132,7 +132,7 @@ async function initCamera(width, height, fps) {
             video.onloadedmetadata = () => { resolve(video) };
         });
     } catch (error) {
-        console.log("Error "+error.code + " " + error.name + ":" + error.message);
+        console.log("Error " + error.code + " " + error.name + ":" + error.message);
         if (error.message === "Could not start video source") {
             alert(error.message + "\nIf you have any other applications open that are using your webcam, please stop sharing your video with them and refresh.");
         }
@@ -150,7 +150,7 @@ function drawPoint(ctx, x, y, r, color) {
 function startPerception() {
 
     initCamera(
-        config.video.width, config.video.height, config.video.fps
+        fingerposeConfig.video.width, fingerposeConfig.video.height, fingerposeConfig.video.fps
     ).then(video => {
         video.play();
         video.addEventListener("loadeddata", event => {
@@ -160,7 +160,7 @@ function startPerception() {
     });
 
     const canvas = document.querySelector("#pose-canvas");
-    canvas.width = config.video.width;
-    canvas.height = config.video.height;
+    canvas.width = fingerposeConfig.video.width;
+    canvas.height = fingerposeConfig.video.height;
     console.log("Canvas initialized");
 };
